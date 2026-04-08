@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CityEventResource;
+use App\Models\CityEvent;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Number;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
+
+class CityEventController extends Controller
+{
+    public function index(Request $request): JsonResource
+    {
+        $perPage = Number::clamp($request->input('limit', 10), 1, 50);
+
+        $cityEvents = QueryBuilder::for(CityEvent::class)
+            ->allowedFilters(
+                AllowedFilter::callback('from', function ($query, $value) {
+                    $query->where('start_at', '>=', $value);
+                }),
+                AllowedFilter::callback('to', function ($query, $value) {
+                    $query->where('start_at', '<=', $value);
+                }),
+
+                AllowedFilter::callback('tag', function ($query, $value) {
+                    $query->whereJsonContains('tags', $value);
+                }),
+
+                AllowedFilter::exact('place'),
+                AllowedFilter::exact('status'),
+
+                AllowedFilter::callback('min_popularity', function ($query, $value) {
+                    $query->where('popularity', '>=', (int) $value);
+                }),
+                AllowedFilter::callback('max_popularity', function ($query, $value) {
+                    $query->where('popularity', '<=', (int) $value);
+                }),
+            )
+            ->orderBy('start_at', 'desc')
+            ->paginate($perPage);
+
+        return CityEventResource::collection($cityEvents);
+    }
+}

@@ -14,7 +14,7 @@ class CityEventFactory extends Factory
 
         return [
             'title' => fake()->sentence(nbWords: 4),
-            'place' => fake()->city().', '.fake()->streetName(),
+            'place' => fake()->streetName(),
             'start_at' => $startAt,
             'end_at' => fake()->dateTimeBetween($startAt, $endAt),
             'tags' => fake()->words(4),
