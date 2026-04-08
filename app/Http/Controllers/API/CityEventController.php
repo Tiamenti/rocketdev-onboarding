@@ -90,4 +90,18 @@ class CityEventController extends Controller
 
         return new CityEventResource($cityEvent);
     }
+
+    public function destroy(int $id): void
+    {
+        $cityEvent = CityEvent::findOrFail($id);
+
+        abort_if(
+            $cityEvent->start_at->gt(today()) && $cityEvent->status != CityEventStatus::Draft,
+            403, "Cannot delete today's event"
+        );
+
+        abort_if($cityEvent->status == CityEventStatus::Published, 403, 'Cannot delete a published event');
+
+        $cityEvent->delete();
+    }
 }
