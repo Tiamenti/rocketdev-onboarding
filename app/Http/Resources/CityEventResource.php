@@ -10,6 +10,7 @@ class CityEventResource extends JsonResource
     public function toArray(Request $request)
     {
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'place' => $this->place,
             'start_at' => $this->start_at,
@@ -18,7 +19,6 @@ class CityEventResource extends JsonResource
             'capacity' => $this->capacity,
             'status' => $this->status,
             'popularity' => $this->popularity,
-            'change_number' => $this->change_number,
         ];
     }
 }

@@ -18,7 +18,7 @@ class StoreCityEventRequest extends FormRequest
             'capacity' => 'required|integer|min:1|max:5000',
 
             'tags' => 'required|array|max:5',
-            'tags.*' => 'required|string|max:50',
+            'tags.*' => 'string|max:50',
 
             'status' => [
                 'required',
