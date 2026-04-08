@@ -44,7 +44,7 @@ class CityEventController extends Controller
                 }),
             )
             ->orderBy('start_at', 'desc')
-            ->paginate($perPage);
+            ->cursorPaginate($perPage);
 
         return CityEventResource::collection($cityEvents);
     }
