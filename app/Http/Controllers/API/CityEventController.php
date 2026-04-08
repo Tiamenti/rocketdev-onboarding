@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CityEvent\StoreCityEventRequest;
 use App\Http\Resources\CityEventResource;
 use App\Models\CityEvent;
 use Illuminate\Http\Request;
@@ -44,5 +45,16 @@ class CityEventController extends Controller
             ->paginate($perPage);
 
         return CityEventResource::collection($cityEvents);
+    }
+
+    public function store(StoreCityEventRequest $request): JsonResource
+    {
+        $cityEvent = CityEvent::make($request->safe()->all());
+
+        abort_if($cityEvent->calculatePopularity() == 1, 'Low popularity Not interesting Event');
+
+        $cityEvent->save();
+
+        return new CityEventResource($cityEvent);
     }
 }

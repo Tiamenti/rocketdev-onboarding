@@ -21,6 +21,10 @@ class CityEvent extends Model
         'status' => CityEventStatus::class,
     ];
 
+    protected $attributes = [
+        'change_number' => 1,
+    ];
+
     public function calculatePopularity(): int
     {
         $daysToStart = today()->diffInDays($this->start_at);
