@@ -57,4 +57,18 @@ class CityEventController extends Controller
 
         return new CityEventResource($cityEvent);
     }
+
+    public function show(int $id): JsonResource
+    {
+        $cityEvent = CityEvent::findOrFail($id);
+        $resource = new CityEventResource($cityEvent);
+
+        if (now()->isTuesday() || now()->isWednesday()) {
+            $resource->additional([
+                'recommendation' => 'Рекомендуем по вторникам и средам',
+            ]);
+        }
+
+        return $resource;
+    }
 }
