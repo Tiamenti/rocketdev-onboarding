@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enums\CityEventStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CityEvent\StoreCityEventRequest;
+use App\Http\Requests\CityEvent\UpdateCityEventRequest;
 use App\Http\Resources\CityEventResource;
 use App\Models\CityEvent;
 use Illuminate\Http\Request;
@@ -70,5 +72,22 @@ class CityEventController extends Controller
         }
 
         return $resource;
+    }
+
+    public function update(UpdateCityEventRequest $request, int $id): JsonResource
+    {
+        $validated = $request->safe()->all();
+        $cityEvent = CityEvent::findOrFail($id);
+
+        $newStatus = $validated['status'] ?? null;
+
+        if ($newStatus == CityEventStatus::Published->value
+            && $cityEvent->status == CityEventStatus::Cancelled) {
+            abort(400, "You can't change the status from canceled to published.");
+        }
+
+        $cityEvent->update($validated);
+
+        return new CityEventResource($cityEvent);
     }
 }
