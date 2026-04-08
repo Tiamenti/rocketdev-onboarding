@@ -20,7 +20,6 @@ class CityEventFactory extends Factory
             'tags' => fake()->words(4),
             'capacity' => fake()->numberBetween(1, 5000),
             'status' => fake()->randomElement(CityEventStatus::cases()),
-            'popularity' => fake()->numberBetween(1, 5),
             'change_number' => fake()->numberBetween(1, 10),
         ];
     }
